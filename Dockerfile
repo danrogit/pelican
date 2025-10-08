@@ -15,4 +15,9 @@ RUN composer install --no-dev --optimize-autoloader || true
 RUN yarn install && yarn build || true
 
 EXPOSE 80
+
+# Added the missing healthcheck, which gave issues on boot.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -f http://localhost:80/ || exit 1
+
 CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
